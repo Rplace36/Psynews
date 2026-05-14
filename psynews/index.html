@@ -1,23 +1,35 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="PsyNews — Independent journalism covering the psychedelic renaissance. Science, policy, culture, and research." />
     <meta name="theme-color" content="#7C3AED" />
-    <!-- Open Graph fallback (overridden per-page by react-helmet-async) -->
-    <meta property="og:site_name" content="PsyNews" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://psynews.vercel.app/og-default.png" />
-    <meta property="og:image:type"   content="image/png" />
-    <meta property="og:image:width"  content="1200" />
+
+    <!-- ── Open Graph (Facebook, LinkedIn, iMessage, Slack) ── -->
+    <meta property="og:site_name"   content="PsyNews" />
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://psynews.vercel.app/" />
+    <meta property="og:title"       content="PsyNews — The Psychedelic Intelligence Network" />
+    <meta property="og:description" content="Independent journalism covering the psychedelic renaissance — research, policy, culture, and science, rigorously reported." />
+    <meta property="og:image"       content="https://psynews.vercel.app/og-default.png" />
+    <meta property="og:image:secure_url" content="https://psynews.vercel.app/og-default.png" />
+    <meta property="og:image:type"  content="image/png" />
+    <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt"    content="PsyNews — The Psychedelic Intelligence Network" />
+    <meta property="og:image:alt"   content="PsyNews — The Psychedelic Intelligence Network" />
+
+    <!-- ── Twitter / X Card ── -->
     <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:site"        content="@PsyNews" />
+    <meta name="twitter:title"       content="PsyNews — The Psychedelic Intelligence Network" />
+    <meta name="twitter:description" content="Independent journalism covering the psychedelic renaissance — research, policy, culture, and science, rigorously reported." />
     <meta name="twitter:image"       content="https://psynews.vercel.app/og-default.png" />
     <meta name="twitter:image:alt"   content="PsyNews — The Psychedelic Intelligence Network" />
+
     <title>PsyNews — The Psychedelic Intelligence Network</title>
+
     <!-- Skip-to-content for accessibility -->
     <style>
       .skip-link{position:fixed;top:-100px;left:16px;z-index:9999;background:#7C3AED;color:#fff;padding:8px 16px;border-radius:6px;font-family:inherit;font-size:.9rem;font-weight:700;text-decoration:none;transition:top .2s}
