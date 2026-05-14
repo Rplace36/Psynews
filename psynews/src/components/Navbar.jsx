@@ -32,7 +32,7 @@ export default function Navbar({ onSearch }) {
 
         {/* Center: nav links */}
         <nav className={`navbar__nav ${menuOpen ? "navbar__nav--open" : ""}`}>
-          {categories.map((cat) => (
+          {(categories ?? []).map((cat) => (
             <a
               key={cat.id}
               href={`#${cat.id}`}

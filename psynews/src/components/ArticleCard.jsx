@@ -53,7 +53,7 @@ export default function ArticleCard({ article, variant = "default" }) {
         <div className="article-card__footer">
           <div className="article-card__author">
             <div className="article-card__avatar">
-              {article.author[0]}
+              {article.author?.[0] ?? "?"}
             </div>
             <div className="article-card__author-info">
               <span className="article-card__author-name">{article.author}</span>
@@ -61,9 +61,9 @@ export default function ArticleCard({ article, variant = "default" }) {
             </div>
           </div>
 
-          {article.tags && variant !== "compact" && (
+          {article.tags?.length > 0 && variant !== "compact" && (
             <div className="article-card__tags">
-              {article.tags.slice(0, 2).map((tag) => (
+              {(article.tags ?? []).slice(0, 2).map((tag) => (
                 <span key={tag} className="article-card__tag">#{tag}</span>
               ))}
             </div>

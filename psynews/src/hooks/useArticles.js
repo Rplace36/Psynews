@@ -10,8 +10,10 @@ import {
 } from "../lib/articleService";
 
 // ─── Generic async hook ──────────────────────────────────────────────────────
+// data initialises as [] so components can safely call .map() before the
+// first fetch resolves — avoids "Cannot read properties of null" in production.
 function useAsync(asyncFn, deps = []) {
-  const [state, setState] = useState({ data: null, loading: true, error: null });
+  const [state, setState] = useState({ data: [], loading: true, error: null });
 
   useEffect(() => {
     let cancelled = false;
@@ -19,7 +21,7 @@ function useAsync(asyncFn, deps = []) {
 
     asyncFn().then(({ data, error }) => {
       if (!cancelled) {
-        setState({ data, loading: false, error: error?.message ?? null });
+        setState({ data: data ?? [], loading: false, error: error?.message ?? null });
       }
     });
 
@@ -60,7 +62,7 @@ export function useAllArticles() {
 }
 
 export function useSearchArticles(query) {
-  const [state, setState] = useState({ data: null, loading: false, error: null });
+  const [state, setState] = useState({ data: [], loading: false, error: null });
 
   const run = useCallback(() => {
     if (!query || !query.trim()) {
@@ -69,7 +71,7 @@ export function useSearchArticles(query) {
     }
     setState((s) => ({ ...s, loading: true, error: null }));
     searchArticles(query.trim()).then(({ data, error }) => {
-      setState({ data, loading: false, error: error?.message ?? null });
+      setState({ data: data ?? [], loading: false, error: error?.message ?? null });
     });
   }, [query]);
 

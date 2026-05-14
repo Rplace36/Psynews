@@ -37,7 +37,7 @@ export default function CategoryArticles({ cat, alt }) {
         <div className="category-section__grid">
           {loading
             ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
-            : articles.map((article, idx) => (
+            : (articles ?? []).map((article, idx) => (
                 <ArticleCard
                   key={article.id}
                   article={article}
