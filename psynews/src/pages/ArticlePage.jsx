@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import SEO from "../components/SEO";
 import Newsletter from "../components/Newsletter";
 import ArticleCard from "../components/ArticleCard";
+import CommentsSection from "../components/CommentsSection";
 import { CategoryBadge } from "../components/Hero";
 import { fetchArticleBySlug, fetchArticlesByCategory } from "../lib/articleService";
 import { articleMeta } from "../lib/seo";
+import { trackArticleView } from "../lib/analytics";
 import "./ArticlePage.css";
 
 export default function ArticlePage() {
@@ -23,6 +25,8 @@ export default function ArticlePage() {
       if (!data) { setNotFound(true); setLoading(false); return; }
       setArticle(data);
       setLoading(false);
+      // Track view after article loads
+      trackArticleView(data.id, slug);
       fetchArticlesByCategory(data.category, 4).then(({ data: rel }) => {
         setRelated((rel ?? []).filter((a) => a.slug !== slug).slice(0, 3));
       });
@@ -180,6 +184,7 @@ export default function ArticlePage() {
         </div>
       </article>
 
+      <CommentsSection articleId={article.id} />
       <Newsletter />
     </>
   );

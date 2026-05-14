@@ -7,8 +7,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('@supabase')) return 'supabase-vendor';
-          if (id.includes('react-helmet-async')) return 'helmet';
+          if (id.includes('@supabase'))                    return 'supabase-vendor';
+          if (id.includes('react-helmet-async'))           return 'helmet';
+          if (id.includes('@tiptap') || id.includes('lowlight') || id.includes('prosemirror')) return 'tiptap-vendor';
           if (id.includes('react-router-dom') || id.includes('react-dom') || id.includes('node_modules/react/')) return 'react-vendor';
         },
       },

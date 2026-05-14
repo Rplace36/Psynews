@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Block admin
+Disallow: /admin
+Disallow: /admin/
+
+# Sitemaps
+Sitemap: https://psynews.vercel.app/sitemap.xml
+Sitemap: https://psynews.vercel.app/rss.xml
+
+# Crawl delay
+Crawl-delay: 2

@@ -293,24 +293,35 @@ export async function searchArticles(query) {
 
 // ─── Newsletter ──────────────────────────────────────────────────────────────
 
-export async function subscribeToNewsletter(email) {
-  if (!isSupabaseConfigured) {
-    // Simulate success in local mode
-    return { error: null };
-  }
+export async function subscribeToNewsletter(email, name, source = "homepage") {
+  // Route through the /api/newsletter-welcome edge function which:
+  //  1. inserts into Supabase with the service role key (no anon RLS issues)
+  //  2. sends a Resend welcome email when RESEND_API_KEY is configured
+  try {
+    const res = await fetch("/api/newsletter-welcome", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, name, source }),
+    });
+    if (res.ok) return { error: null, alreadySubscribed: false };
 
-  const { error } = await supabase
-    .from("newsletter_subscribers")
-    .insert({ email });
+    // Fallback: direct Supabase insert if edge function not deployed
+    const err = await res.json().catch(() => ({}));
+    if (err.code === "23505") return { error: null, alreadySubscribed: true };
+    return { error: err.error || "Subscription failed. Please try again." };
+  } catch {
+    // Edge function not deployed yet (local dev) — direct insert
+    if (!isSupabaseConfigured) return { error: null };
 
-  if (error) {
-    // 23505 = unique_violation (already subscribed)
-    if (error.code === "23505") {
-      return { error: null, alreadySubscribed: true };
+    const { error } = await supabase
+      .from("newsletter_subscribers")
+      .insert({ email, name: name || null, source });
+
+    if (error) {
+      if (error.code === "23505") return { error: null, alreadySubscribed: true };
+      console.error("[articleService] subscribeToNewsletter:", error.message);
+      return { error: error.message };
     }
-    console.error("[articleService] subscribeToNewsletter:", error.message);
-    return { error };
+    return { error: null, alreadySubscribed: false };
   }
-
-  return { error: null, alreadySubscribed: false };
 }
