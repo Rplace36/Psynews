@@ -1,0 +1,43 @@
+.categories-wrapper {}
+
+.category-section--alt {
+  background: var(--color-bg-2);
+}
+
+.section-title__accent {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.category-section__divider {
+  height: 3px;
+  width: 48px;
+  border-radius: 2px;
+  margin-bottom: 32px;
+  opacity: 0.7;
+}
+
+.category-section__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* First card in category gets featured treatment */
+.category-section__grid > *:first-child {
+  grid-column: span 1;
+}
+
+@media (max-width: 1024px) {
+  .category-section__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .category-section__grid {
+    grid-template-columns: 1fr;
+  }
+}

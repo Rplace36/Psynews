@@ -1,0 +1,106 @@
+.trending-bar {
+  background: var(--color-bg-2);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trending-bar__header {
+  margin-bottom: 28px;
+}
+
+.trending-bar__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-amber);
+}
+
+.trending-bar__list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+.trending-item {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+
+.trending-item:hover {
+  border-color: var(--color-border-bright);
+  background: var(--color-bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.trending-item__number {
+  font-size: 1.8rem;
+  font-weight: 900;
+  font-family: 'Playfair Display', serif;
+  color: rgba(255,255,255,0.07);
+  line-height: 1;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.trending-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.trending-item__cat {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trending-item__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+
+.trending-item:hover .trending-item__title {
+  color: var(--color-violet-light);
+}
+
+.trending-item__meta {
+  font-size: 0.7rem;
+  color: var(--color-text-faint);
+  margin-top: auto;
+}
+
+@media (max-width: 1024px) {
+  .trending-bar__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .trending-bar__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .trending-bar__list {
+    grid-template-columns: 1fr;
+  }
+}
