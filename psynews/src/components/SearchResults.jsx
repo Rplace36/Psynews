@@ -1,17 +1,10 @@
-import { articles, getCategoryById } from "../data/articles";
+import { useSearchArticles } from "../hooks/useArticles";
 import ArticleCard from "./ArticleCard";
+import { SkeletonCard, ErrorMessage } from "./Skeleton";
 import "./SearchResults.css";
 
 export default function SearchResults({ query, onClear }) {
-  const q = query.toLowerCase();
-  const results = articles.filter(
-    (a) =>
-      a.title.toLowerCase().includes(q) ||
-      a.excerpt.toLowerCase().includes(q) ||
-      a.author.toLowerCase().includes(q) ||
-      a.tags.some((t) => t.toLowerCase().includes(q)) ||
-      getCategoryById(a.category)?.label.toLowerCase().includes(q)
-  );
+  const { data: results, loading, error } = useSearchArticles(query);
 
   return (
     <section className="search-results">
@@ -21,22 +14,22 @@ export default function SearchResults({ query, onClear }) {
             <h2 className="search-results__title">
               Search: <em>"{query}"</em>
             </h2>
-            <p className="search-results__count">
-              {results.length} result{results.length !== 1 ? "s" : ""} found
-            </p>
+            {!loading && results && (
+              <p className="search-results__count">
+                {results.length} result{results.length !== 1 ? "s" : ""} found
+              </p>
+            )}
           </div>
           <button className="search-results__clear" onClick={onClear}>
             &larr; Back to homepage
           </button>
         </div>
 
-        {results.length > 0 ? (
-          <div className="search-results__grid">
-            {results.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
-        ) : (
+        {error && !loading && (
+          <ErrorMessage message="Search failed. Please try again." />
+        )}
+
+        {!loading && !error && results && results.length === 0 && (
           <div className="search-results__empty">
             <p>No articles found for "{query}".</p>
             <button className="search-results__clear" onClick={onClear}>
@@ -44,6 +37,14 @@ export default function SearchResults({ query, onClear }) {
             </button>
           </div>
         )}
+
+        <div className="search-results__grid">
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+            : results?.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+        </div>
       </div>
     </section>
   );

@@ -1,10 +1,10 @@
-import { articles } from "../data/articles";
+import { useLatestArticles } from "../hooks/useArticles";
 import ArticleCard from "./ArticleCard";
+import { SkeletonCard, ErrorMessage } from "./Skeleton";
 import "./LatestNews.css";
 
 export default function LatestNews() {
-  // Show non-featured articles as latest
-  const latest = articles.filter((a) => !a.featured).slice(0, 6);
+  const { data: articles, loading, error } = useLatestArticles(6);
 
   return (
     <section className="latest-news section-spacing">
@@ -17,10 +17,14 @@ export default function LatestNews() {
           <a href="#" className="section-view-all">View all stories &rarr;</a>
         </div>
 
+        {error && !loading && <ErrorMessage message="Could not load recent articles." />}
+
         <div className="latest-news__grid">
-          {latest.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+            : articles?.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
         </div>
       </div>
     </section>

@@ -1,8 +1,23 @@
-import { getCategoryById } from "../data/articles";
+import { CategoryBadge } from "./Hero";
 import "./ArticleCard.css";
 
+/**
+ * ArticleCard
+ *
+ * Accepts an `article` object in the normalized shape produced by
+ * articleService.normalizeArticle() — or the local placeholder shape
+ * (they are kept identical in structure).
+ *
+ * Required fields:
+ *   id, title, excerpt, image, category, author, authorRole,
+ *   tags, readTime, date
+ *
+ * Optional (from Supabase join):
+ *   _raw.category_color, _raw.category_label
+ */
 export default function ArticleCard({ article, variant = "default" }) {
-  const cat = getCategoryById(article.category);
+  const categoryColor = article._raw?.category_color;
+  const categoryLabel = article._raw?.category_label;
 
   return (
     <article className={`article-card article-card--${variant}`}>
@@ -18,14 +33,12 @@ export default function ArticleCard({ article, variant = "default" }) {
 
       <div className="article-card__body">
         <div className="article-card__meta-top">
-          {cat && (
-            <span
-              className="article-card__cat"
-              style={{ "--cat-color": cat.color }}
-            >
-              {cat.label}
-            </span>
-          )}
+          <CategoryBadge
+            categoryId={article.category}
+            categoryColor={categoryColor}
+            categoryLabel={categoryLabel}
+            size="sm"
+          />
           <span className="article-card__date">{article.date}</span>
         </div>
 

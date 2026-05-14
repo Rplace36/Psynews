@@ -1,13 +1,15 @@
-import { categories } from "../data/articles";
+import { useCategories } from "../hooks/useArticles";
 import "./Footer.css";
 
 const footerLinks = {
-  Company: ["About Us", "Careers", "Advertise", "Press Kit", "Contact"],
+  Company:   ["About Us", "Careers", "Advertise", "Press Kit", "Contact"],
   Resources: ["Research Database", "Psychedelic Guide", "Integration Resources", "Safety Info", "FAQ"],
-  Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy", "Accessibility"],
+  Legal:     ["Privacy Policy", "Terms of Service", "Cookie Policy", "Accessibility"],
 };
 
 export default function Footer() {
+  const { data: categories } = useCategories();
+
   return (
     <footer className="footer">
       <div className="container">
@@ -31,19 +33,25 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Categories */}
-          <div className="footer__col">
-            <h4 className="footer__col-title">Topics</h4>
-            <ul className="footer__links">
-              {categories.map((cat) => (
-                <li key={cat.id}>
-                  <a href={`#${cat.id}`} className="footer__link" style={{ "--link-color": cat.color }}>
-                    {cat.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Categories (from Supabase or local fallback) */}
+          {categories && categories.length > 0 && (
+            <div className="footer__col">
+              <h4 className="footer__col-title">Topics</h4>
+              <ul className="footer__links">
+                {categories.map((cat) => (
+                  <li key={cat.id}>
+                    <a
+                      href={`#${cat.id}`}
+                      className="footer__link"
+                      style={{ "--link-color": cat.color }}
+                    >
+                      {cat.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Other links */}
           {Object.entries(footerLinks).map(([group, links]) => (

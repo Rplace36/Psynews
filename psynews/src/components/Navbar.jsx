@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { categories } from "../data/articles";
+import { useCategories } from "../hooks/useArticles";
 import "./Navbar.css";
 
 export default function Navbar({ onSearch }) {
@@ -7,6 +7,7 @@ export default function Navbar({ onSearch }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchVal, setSearchVal] = useState("");
+  const { data: categories } = useCategories();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);

@@ -1,0 +1,107 @@
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 6px;
+}
+
+/* Variants */
+.skeleton--image      { width: 100%; aspect-ratio: 16/9; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+.skeleton--hero-image { width: 100%; aspect-ratio: 4/3;  border-radius: var(--radius-lg); }
+.skeleton--tag        { width: 80px; height: 22px; border-radius: 999px; }
+.skeleton--h1         { height: 40px; width: 90%; margin-top: 8px; }
+.skeleton--h1-short   { width: 65%; }
+.skeleton--title      { height: 20px; width: 90%; margin-top: 6px; }
+.skeleton--title-short{ width: 70%; }
+.skeleton--text       { height: 14px; width: 100%; margin-top: 6px; }
+.skeleton--text-short { width: 75%; }
+.skeleton--avatar     { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+.skeleton--author     { height: 14px; width: 120px; }
+
+/* Card skeleton */
+.skeleton-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.skeleton-card__body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-card__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Hero skeleton */
+.skeleton-hero-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.skeleton-hero-main__content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .skeleton-hero-main {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+/* Error message */
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 24px;
+  color: var(--color-text-muted);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.error-message__icon {
+  font-size: 1.8rem;
+  color: var(--color-rose);
+}
+
+.error-message__retry {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.error-message__retry:hover {
+  border-color: var(--color-violet);
+  color: var(--color-text);
+}

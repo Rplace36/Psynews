@@ -1,18 +1,31 @@
 import { useState } from "react";
+import { subscribeToNewsletter } from "../lib/articleService";
 import "./Newsletter.css";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | success | error
+  const [status, setStatus] = useState("idle"); // idle | loading | success | already | error
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       setStatus("error");
+      setErrorMsg("Please enter a valid email address.");
       return;
     }
-    setStatus("success");
+
+    setStatus("loading");
+    const { error, alreadySubscribed } = await subscribeToNewsletter(email);
+
+    if (error) {
+      setStatus("error");
+      setErrorMsg("Something went wrong. Please try again.");
+      return;
+    }
+
     setEmail("");
+    setStatus(alreadySubscribed ? "already" : "success");
   };
 
   return (
@@ -36,12 +49,21 @@ export default function Newsletter() {
             psychedelic science, policy, and culture stories — delivered every Friday.
           </p>
 
-          {status === "success" ? (
+          {status === "success" && (
             <div className="newsletter__success">
               <span className="newsletter__success-icon">&#10003;</span>
               <span>You're in! Check your inbox to confirm your subscription.</span>
             </div>
-          ) : (
+          )}
+
+          {status === "already" && (
+            <div className="newsletter__success">
+              <span className="newsletter__success-icon">&#9432;</span>
+              <span>You're already subscribed — thanks for being a reader!</span>
+            </div>
+          )}
+
+          {status !== "success" && status !== "already" && (
             <form onSubmit={handleSubmit} className="newsletter__form">
               <div className="newsletter__input-wrap">
                 <input
@@ -50,16 +72,17 @@ export default function Newsletter() {
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    setStatus("idle");
+                    if (status === "error") setStatus("idle");
                   }}
                   className={`newsletter__input ${status === "error" ? "newsletter__input--error" : ""}`}
+                  disabled={status === "loading"}
                 />
-                <button type="submit" className="newsletter__btn">
-                  Subscribe Free
+                <button type="submit" className="newsletter__btn" disabled={status === "loading"}>
+                  {status === "loading" ? "Subscribing…" : "Subscribe Free"}
                 </button>
               </div>
               {status === "error" && (
-                <p className="newsletter__error">Please enter a valid email address.</p>
+                <p className="newsletter__error">{errorMsg}</p>
               )}
               <p className="newsletter__fine-print">
                 No spam. Unsubscribe anytime. By subscribing, you agree to our{" "}
