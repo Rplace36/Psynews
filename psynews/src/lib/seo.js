@@ -5,7 +5,7 @@ export const SITE = {
   description:
     "Independent journalism covering the psychedelic renaissance — research, policy, culture, and science, rigorously reported.",
   twitterHandle: "@PsyNews",
-  defaultImage: "https://psynews.vercel.app/og-default.png",
+  defaultImage: "https://psynews.vercel.app/og-default.svg",
 };
 
 export function articleMeta(article) {
