@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useFeaturedArticles } from "../hooks/useArticles";
 import { SkeletonHeroMain, SkeletonCard, ErrorMessage } from "./Skeleton";
 import "./Hero.css";
@@ -6,8 +7,7 @@ export default function Hero() {
   const { data: featured, loading, error } = useFeaturedArticles();
 
   return (
-    <section className="hero">
-      {/* Psychedelic background */}
+    <section className="hero" aria-label="Featured stories">
       <div className="hero__bg" aria-hidden="true">
         <div className="hero__orb hero__orb--1" />
         <div className="hero__orb hero__orb--2" />
@@ -16,8 +16,7 @@ export default function Hero() {
       </div>
 
       <div className="container hero__inner">
-        {/* Masthead */}
-        <div className="hero__masthead">
+        <div className="hero__masthead" aria-hidden="true">
           <div className="hero__masthead-line" />
           <span className="hero__masthead-label">The Psychedelic Intelligence Network</span>
           <div className="hero__masthead-line" />
@@ -41,27 +40,35 @@ export default function Hero() {
             <>
               {main && (
                 <div className="hero__main">
-                  <a href="#article" className="hero__main-image-wrap">
+                  <Link to={`/article/${main.slug}`} className="hero__main-image-wrap">
                     <img
                       src={main.image}
-                      alt={main.title}
+                      alt={`Cover image for "${main.title}"`}
                       className="hero__main-image"
                       loading="eager"
+                      width="800"
+                      height="600"
                     />
-                    <div className="hero__main-image-overlay" />
-                  </a>
+                    <div className="hero__main-image-overlay" aria-hidden="true" />
+                  </Link>
                   <div className="hero__main-content">
                     <div className="hero__meta-row">
-                      <CategoryBadge categoryId={main.category} />
-                      <span className="hero__date">{main.date}</span>
+                      <CategoryBadge
+                        categoryId={main.category}
+                        categoryColor={main._raw?.category_color}
+                        categoryLabel={main._raw?.category_label}
+                      />
+                      <time dateTime={main._raw?.published_at} className="hero__date">
+                        {main.date}
+                      </time>
                     </div>
                     <h1 className="hero__title">
-                      <a href="#article">{main.title}</a>
+                      <Link to={`/article/${main.slug}`}>{main.title}</Link>
                     </h1>
                     <p className="hero__excerpt">{main.excerpt}</p>
                     <div className="hero__author-row">
-                      <div className="hero__author-avatar">
-                        {main.author[0]}
+                      <div className="hero__author-avatar" aria-hidden="true">
+                        {main.author?.[0] ?? "?"}
                       </div>
                       <div>
                         <div className="hero__author-name">{main.author}</div>
@@ -75,19 +82,28 @@ export default function Hero() {
               {secondary.length > 0 && (
                 <div className="hero__secondary">
                   {secondary.map((article) => (
-                    <a key={article.id} href="#article" className="hero__secondary-card">
+                    <Link key={article.id} to={`/article/${article.slug}`} className="hero__secondary-card">
                       <div className="hero__secondary-image-wrap">
-                        <img src={article.image} alt={article.title} className="hero__secondary-image" />
-                        <div className="hero__secondary-overlay" />
+                        <img
+                          src={article.image}
+                          alt={`Cover for "${article.title}"`}
+                          className="hero__secondary-image"
+                        />
+                        <div className="hero__secondary-overlay" aria-hidden="true" />
                       </div>
                       <div className="hero__secondary-content">
-                        <CategoryBadge categoryId={article.category} size="sm" />
-                        <h3 className="hero__secondary-title">{article.title}</h3>
+                        <CategoryBadge
+                          categoryId={article.category}
+                          categoryColor={article._raw?.category_color}
+                          categoryLabel={article._raw?.category_label}
+                          size="sm"
+                        />
+                        <h2 className="hero__secondary-title">{article.title}</h2>
                         <div className="hero__secondary-meta">
-                          {article.author} &bull; {article.date}
+                          <span>{article.author}</span> &bull; <time dateTime={article._raw?.published_at}>{article.date}</time>
                         </div>
                       </div>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -99,25 +115,13 @@ export default function Hero() {
   );
 }
 
-// CategoryBadge reads from the article's category field.
-// When Supabase is live we have category_color on the row; we also keep
-// the local fallback color map for the static-data path.
 const LOCAL_COLORS = {
-  research: "#7C3AED",
-  policy:   "#0EA5E9",
-  culture:  "#F59E0B",
-  events:   "#10B981",
-  books:    "#EC4899",
-  opinion:  "#EF4444",
+  research: "#7C3AED", policy: "#0EA5E9", culture: "#F59E0B",
+  events: "#10B981", books: "#EC4899", opinion: "#EF4444",
 };
-
 const LOCAL_LABELS = {
-  research: "Psychedelic Research",
-  policy:   "Policy",
-  culture:  "Culture",
-  events:   "Events",
-  books:    "Books",
-  opinion:  "Opinion",
+  research: "Psychedelic Research", policy: "Policy", culture: "Culture",
+  events: "Events", books: "Books", opinion: "Opinion",
 };
 
 export function CategoryBadge({ categoryId, categoryColor, categoryLabel, size = "md" }) {

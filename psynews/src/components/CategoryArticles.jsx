@@ -1,38 +1,33 @@
+import { Link } from "react-router-dom";
 import { useArticlesByCategory } from "../hooks/useArticles";
 import ArticleCard from "./ArticleCard";
 import { SkeletonCard } from "./Skeleton";
 
-/**
- * Renders one category section, fetching its own articles.
- * Splitting this out avoids fetching all categories' articles in one hook.
- */
 export default function CategoryArticles({ cat, alt }) {
   const { data: articles, loading } = useArticlesByCategory(cat.id, 3);
 
-  // Don't render the section at all if there's nothing to show (after load)
   if (!loading && (!articles || articles.length === 0)) return null;
 
   return (
     <section
       id={cat.id}
       className={`category-section section-spacing ${alt ? "category-section--alt" : ""}`}
+      aria-labelledby={`cat-heading-${cat.id}`}
     >
       <div className="container">
         <div className="section-header">
           <div className="section-header__left">
-            <span className="section-eyebrow" style={{ color: cat.color }}>
-              Category
-            </span>
-            <h2 className="section-title">
+            <span className="section-eyebrow" style={{ color: cat.color }}>Category</span>
+            <h2 className="section-title" id={`cat-heading-${cat.id}`}>
               <span className="section-title__accent">{cat.label}</span>
             </h2>
           </div>
-          <a href="#" className="section-view-all">
+          <Link to={`/category/${cat.id}`} className="section-view-all">
             All {cat.label} &rarr;
-          </a>
+          </Link>
         </div>
 
-        <div className="category-section__divider" style={{ background: cat.color }} />
+        <div className="category-section__divider" style={{ background: cat.color }} aria-hidden="true" />
 
         <div className="category-section__grid">
           {loading

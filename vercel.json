@@ -1,5 +1,8 @@
 {
   "buildCommand": "cd psynews && npm install && npm run build",
   "outputDirectory": "psynews/dist",
-  "installCommand": "echo 'install handled in buildCommand'"
+  "installCommand": "echo 'install handled in buildCommand'",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

@@ -1,8 +1,8 @@
-import "./Skeleton.css";
+/* Skeleton loading components — shimmer styles live in index.css */
 
 export function SkeletonCard() {
   return (
-    <div className="skeleton-card">
+    <div className="skeleton-card" aria-hidden="true">
       <div className="skeleton skeleton--image" />
       <div className="skeleton-card__body">
         <div className="skeleton skeleton--tag" />
@@ -22,7 +22,7 @@ export function SkeletonCard() {
 
 export function SkeletonHeroMain() {
   return (
-    <div className="skeleton-hero-main">
+    <div className="skeleton-hero-main" aria-hidden="true">
       <div className="skeleton skeleton--hero-image" />
       <div className="skeleton-hero-main__content">
         <div className="skeleton skeleton--tag" />
@@ -38,8 +38,8 @@ export function SkeletonHeroMain() {
 
 export function ErrorMessage({ message = "Failed to load content.", onRetry }) {
   return (
-    <div className="error-message">
-      <span className="error-message__icon">&#9888;</span>
+    <div className="error-message" role="alert">
+      <span className="error-message__icon" aria-hidden="true">&#9888;</span>
       <p>{message}</p>
       {onRetry && (
         <button className="error-message__retry" onClick={onRetry}>

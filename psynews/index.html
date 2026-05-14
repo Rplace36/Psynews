@@ -5,9 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="PsyNews — Independent journalism covering the psychedelic renaissance. Science, policy, culture, and research." />
+    <meta name="theme-color" content="#7C3AED" />
+    <!-- Open Graph fallback (overridden per-page by react-helmet-async) -->
+    <meta property="og:site_name" content="PsyNews" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://psynews.vercel.app/og-default.png" />
     <title>PsyNews — The Psychedelic Intelligence Network</title>
+    <!-- Skip-to-content for accessibility -->
+    <style>
+      .skip-link{position:fixed;top:-100px;left:16px;z-index:9999;background:#7C3AED;color:#fff;padding:8px 16px;border-radius:6px;font-family:inherit;font-size:.9rem;font-weight:700;text-decoration:none;transition:top .2s}
+      .skip-link:focus{top:16px}
+    </style>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
