@@ -74,6 +74,11 @@ function formatDate(iso) {
 
 // ─── Categories ──────────────────────────────────────────────────────────────
 
+// Fallback sort order when deriving categories from article rows
+const CATEGORY_SORT = {
+  research: 1, policy: 2, culture: 3, events: 4, books: 5, opinion: 6,
+};
+
 export async function fetchCategories() {
   if (!isSupabaseConfigured) {
     return { data: localCategories, error: null };
@@ -87,6 +92,32 @@ export async function fetchCategories() {
   if (error) {
     console.error("[articleService] fetchCategories:", error.message);
     return { data: localCategories, error };
+  }
+
+  // If the categories table is empty (seed not applied), derive unique
+  // categories from the articles_with_author view which already has the
+  // joined label + color on every row.
+  if (data.length === 0) {
+    const { data: articleRows, error: aErr } = await supabase
+      .from("articles_with_author")
+      .select("category_id, category_label, category_color");
+
+    if (aErr || !articleRows) return { data: localCategories, error: aErr };
+
+    const seen = new Map();
+    for (const row of articleRows) {
+      if (!seen.has(row.category_id)) {
+        seen.set(row.category_id, {
+          id:    row.category_id,
+          label: row.category_label,
+          color: row.category_color,
+        });
+      }
+    }
+    const derived = [...seen.values()].sort(
+      (a, b) => (CATEGORY_SORT[a.id] ?? 99) - (CATEGORY_SORT[b.id] ?? 99)
+    );
+    return { data: derived, error: null };
   }
 
   return { data: data.map(normalizeCategory), error: null };
