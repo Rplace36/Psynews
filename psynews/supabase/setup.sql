@@ -1,27 +1,24 @@
 -- ============================================================
--- PsyNews — Supabase Schema
--- Run this in the Supabase SQL editor (Dashboard → SQL Editor)
--- or via: supabase db push (if using the Supabase CLI)
+-- PsyNews — Supabase Schema  (Supabase-hosted safe version)
+-- Run in: Dashboard → SQL Editor → New Query → Run
 -- ============================================================
 
--- Extensions
+-- uuid-ossp is pre-enabled on all Supabase projects
 create extension if not exists "uuid-ossp";
-create extension if not exists pg_trgm;   -- for full-text search on title/excerpt
 
 -- ──────────────────────────────────────────────
 -- 1. CATEGORIES
 -- ──────────────────────────────────────────────
 create table if not exists public.categories (
-  id          text        primary key,                    -- e.g. 'research', 'policy'
+  id          text        primary key,
   label       text        not null,
-  color       text        not null default '#7C3AED',     -- hex accent color
+  color       text        not null default '#7C3AED',
   sort_order  smallint    not null default 0,
   created_at  timestamptz not null default now()
 );
 
 alter table public.categories enable row level security;
 
--- Public read-only
 create policy "categories_select" on public.categories
   for select using (true);
 
@@ -51,7 +48,7 @@ create table if not exists public.articles (
   title         text        not null,
   slug          text        not null unique,
   excerpt       text        not null,
-  body          text,                                  -- full article markdown/HTML
+  body          text,
   image_url     text,
   category_id   text        not null references public.categories(id) on delete restrict,
   author_id     uuid        not null references public.authors(id) on delete restrict,
@@ -66,21 +63,17 @@ create table if not exists public.articles (
 
 alter table public.articles enable row level security;
 
--- Public can read published articles
 create policy "articles_select_published" on public.articles
   for select using (published = true);
 
--- Indexes
+-- Indexes (no pg_trgm needed)
 create index if not exists articles_category_idx  on public.articles (category_id);
 create index if not exists articles_author_idx    on public.articles (author_id);
 create index if not exists articles_featured_idx  on public.articles (featured) where featured = true;
 create index if not exists articles_published_idx on public.articles (published_at desc);
 create index if not exists articles_slug_idx      on public.articles (slug);
--- Full-text search index using pg_trgm
-create index if not exists articles_title_trgm    on public.articles using gin (title gin_trgm_ops);
-create index if not exists articles_excerpt_trgm  on public.articles using gin (excerpt gin_trgm_ops);
 
--- Auto-update updated_at
+-- Auto-update updated_at trigger
 create or replace function public.set_updated_at()
 returns trigger language plpgsql as $$
 begin
@@ -106,16 +99,29 @@ create table if not exists public.newsletter_subscribers (
 
 alter table public.newsletter_subscribers enable row level security;
 
--- Only allow insert from anon (no select — email addresses are private)
 create policy "newsletter_insert" on public.newsletter_subscribers
   for insert with check (true);
 
 -- ──────────────────────────────────────────────
--- 5. HELPER VIEW — articles with joined data
+-- 5. ARTICLES + AUTHOR + CATEGORY VIEW
 -- ──────────────────────────────────────────────
 create or replace view public.articles_with_author as
   select
-    a.*,
+    a.id,
+    a.title,
+    a.slug,
+    a.excerpt,
+    a.body,
+    a.image_url,
+    a.category_id,
+    a.author_id,
+    a.tags,
+    a.featured,
+    a.published,
+    a.read_time,
+    a.published_at,
+    a.created_at,
+    a.updated_at,
     au.name        as author_name,
     au.role        as author_role,
     au.avatar_url  as author_avatar_url,
@@ -128,16 +134,16 @@ create or replace view public.articles_with_author as
   where a.published = true;
 
 -- ──────────────────────────────────────────────
--- 6. FULL-TEXT SEARCH FUNCTION
+-- 6. SEARCH FUNCTION (ilike, no pg_trgm)
 -- ──────────────────────────────────────────────
 create or replace function public.search_articles(query text)
 returns setof public.articles_with_author
-language sql stable as $$
+language sql stable security definer as $$
   select *
   from public.articles_with_author
   where
-    title   ilike '%' || query || '%'
-    or excerpt ilike '%' || query || '%'
+    title          ilike '%' || query || '%'
+    or excerpt     ilike '%' || query || '%'
     or author_name ilike '%' || query || '%'
     or category_label ilike '%' || query || '%'
     or query = any(tags)
