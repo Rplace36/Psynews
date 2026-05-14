@@ -1,13 +1,32 @@
-User-agent: *
+# PsyNews robots.txt
+
+# Social media crawlers — explicitly allowed, full access
+User-agent: facebookexternalhit
 Allow: /
 
-# Block admin
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# All other crawlers
+User-agent: *
+Allow: /
 Disallow: /admin
 Disallow: /admin/
 
 # Sitemaps
 Sitemap: https://psynews.vercel.app/sitemap.xml
-Sitemap: https://psynews.vercel.app/rss.xml
-
-# Crawl delay
-Crawl-delay: 2
